@@ -10,3 +10,8 @@ For setting up the project run
 ### for linux:
 * export FLASK_APP=run.py
 * flask run
+## Structure
+/app/ Contains the actual application
+.config/ Contains Flask and SCSS configuration.
+run.py Run to start Flask Server.
+data.db SQLite Database File.
