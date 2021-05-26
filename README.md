@@ -10,3 +10,6 @@ For setting up the project run
 ### for linux:
 * export FLASK_APP=run.py
 * flask run
+## run in dev mode to debug
+set FLASK_ENV=development
+flask run
