@@ -1,14 +1,40 @@
 from flask import Flask, render_template,  request, jsonify, redirect, url_for
 from app import app
 from app import database as db_helper
+import sqlite3 as sql
 
+# connect to tasks_database.sq (database will be created, if not exist)
+con = sql.connect('tasks_database.db')
+con.execute('CREATE TABLE IF NOT EXISTS tbl_tasks (ID INTEGER PRIMARY KEY AUTOINCREMENT,'
+            + 'task TEXT, status TEXT)')
+con.close
 
-@app.route("/create", methods=['POST'])
+@app.route("/create", methods=['GET', 'POST'])
 def create():
-    data = request.get_json()
-    # db_helper.insert_new_task(data['description'])
-    result = {'success': True, 'response': 'Done'}
-    return jsonify(result)
+     if request.method == 'GET':
+            # send the form
+            return render_template('index.html')
+     else:
+     # request.method == 'POST':
+     # read data from the form and save in variable
+            task = request.form['task']
+            status = 'todo'
+            # store in database
+            try:
+                con = sql.connect('tasks_database.db')
+                c =  con.cursor() # cursor
+                # insert data
+                c.execute("INSERT INTO tbl_tasks (task, status) VALUES (?,?)",
+                (task, status))
+                con.commit() # apply changes
+                # go to thanks page
+                return render_template('index.html', task=task)
+            except con.Error as err: # if error
+                # then display the error in 'database_error.html' page
+                return render_template('database_error.html', error=err)
+            finally:
+                con.close() # close the connection
+
 
 
 @app.route("/edit/<int:task_id>", methods=['POST'])
