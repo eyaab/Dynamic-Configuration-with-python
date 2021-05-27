@@ -1,51 +1,207 @@
-<!doctype html>
+<!DOCTYPE html>
 <html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport"
-          content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
-    <meta http-equiv="X-UA-Compatible" content="ie=edge">
-    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css"
-          integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
+  <head>
+    <meta charset="UTF-8" />
+    <meta
+      name="viewport"
+      content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0"
+    />
+    <meta http-equiv="X-UA-Compatible" content="ie=edge" />
+    <link
+      rel="stylesheet"
+      href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css"
+      integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm"
+      crossorigin="anonymous"
+    />
     <title>Todo App</title>
     <style>
-        .title {
-          color: rgb(124, 16, 92);
-          font-weight: bold;
-          font-size:23px;
-          padding: 20px;
-        }
-        .container {
-         background-color: rgb(252, 251, 249);
-          margin-top: 100px;
-          padding: 20px;
-        }
-        </style>
-</head>
-<body>
+      .subtitle {
+        color: rgb(124, 16, 92);
+        font-weight: bold;
+        font-size: 23px;
+        padding: 20px;
+      }
+      .container {
+        background-color: rgb(252, 251, 249);
+        margin-top: 100px;
+        padding: 20px;
+      }
+      .big-container {
+        background-color: beige;
+      }
+      .title {
+        color: darkblue;
+      }
+    </style>
+  </head>
 
-<div class="container">
-    <h3>Welcome to our todo app</h3>
-    <hr>
-    <form action="/add" method="post">
+  <body class="big-container">
+    <div class="container">
+      <h3 class="title">Welcome to our todo project app</h3>
+      <hr />
+      <form action="/create" method="post" form="form1">
         <div class="form-group">
-            <label for="title" class="title">search for todo task</label>
-            <input type="text" class="form-control" id="title" name="title" placeholder="Enter Todo..."><br>
-            <button type="submit" class="btn btn-success">Add</button>
+          <label for="title" class="subtitle">Add a todo project task</label>
+
+          <input
+            type="text"
+            class="form-control"
+            id="title"
+            name="title"
+            placeholder="Enter Todo..."
+            onchange="myFunction(this.value)"
+          /><br />
         </div>
-    </form>
-  
-</div>
+      </form>
+      <div style="text-align: right">
+        <button
+          type="button"
+          class="btn btn-info btn-sm"
+          data-bs-toggle="modal"
+          data-bs-target="#task-modal"
+          data-source="New Task"
+          onclick="document.getElementById('task-modal').style.display='contents'"
+        >
+          Add/Edit todo project Task
+        </button>
+      </div>
+      <div
+        class="modal fade"
+        id="task-modal"
+        tabindex="-1"
+        aria-labelledby="Label"
+        aria-hidden="true"
+      >
+        <div class="modal-dialog">
+          <div class="modal-content modal-reference">
+            <div class="modal-header">
+              <h5 class="modal-title" id="Label">Edit/Add a task</h5>
+            </div>
 
+            <div class="modal-body">
+              <div class="input-group mb-3">
+                <span class="input-group-text" id="task-form-display"
+                  >Task</span
+                >
+                <input
+                  type="text"
+                  class="form-control"
+                  placeholder="Description of task"
+                  aria-label="task-name"
+                  aria-describedby="basic-addon1"
+                />
+              </div>
+            </div>
+            <div class="modal-footer">
+              <button
+                type="button"
+                class="btn btn-danger"
+                data-bs-dismiss="modal"
+                onclick="document.getElementById('task-modal').style.display='none'"
+              >
+                Close
+              </button>
+              <button id="submit-task" type="button" class="btn btn-success">
+                Save changes
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="container table-responsive">
+        <table class="table">
+          <thead>
+            <tr>
+              <th class="task-id">TASK ID</th>
+              <th class="task">TASK NAME</th>
+              <th class="status">STATUS</th>
+              <th class="update">EDIT</th>
+              <th class="update">REMOVE</th>
+            </tr>
+          </thead>
 
-<script src="https://code.jquery.com/jquery-3.2.1.slim.min.js"
-        integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN"
-        crossorigin="anonymous"></script>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js"
-        integrity="sha384-ApNbgh9B+Y1QKtv3Rn7W3mgPxhU9K/ScQsAP7hUibX39j7fakFPskvXusvfa0b4Q"
-        crossorigin="anonymous"></script>
-<script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js"
-        integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl"
-        crossorigin="anonymous"></script>
-</body>
+          <tbody>
+            {% for item in items %}
+            <tr>
+              <td>{{item.id}}</td>
+              <td>{{item.task}}</td>
+
+              {% if item.status == "In Progress" %}
+              <td>
+                <button
+                  type="button"
+                  class="btn btn-outline-warning btn-sm state"
+                  data-source="{{item.id}}"
+                >
+                  {{item.status}}
+                </button>
+              </td>
+              {%endif%} {% if item.status == "Todo" %}
+              <td>
+                <button
+                  type="button"
+                  class="btn btn-outline-secondary btn-sm state"
+                  data-source="{{item.id}}"
+                >
+                  {{item.status}}
+                </button>
+              </td>
+              {%endif%} {% if item.status == "Complete" %}
+              <td>
+                <button
+                  type="button"
+                  class="btn btn-outline-success btn-sm state"
+                  data-source="{{item.id}}"
+                >
+                  {{item.status}}
+                </button>
+              </td>
+              {%endif%}
+
+              <td>
+                <button
+                  type="button"
+                  class="btn btn-outline-info"
+                  data-bs-toggle="modal"
+                  data-bs-target="#task-modal"
+                  data-source="{{item.id}}"
+                  data-content="{{item.task}}"
+                >
+                  Edit
+                </button>
+              </td>
+
+              <td>
+                <button
+                  class="btn btn-outline-danger remove"
+                  data-source="{{item.id}}"
+                  type="button"
+                >
+                  Delete
+                </button>
+              </td>
+            </tr>
+            {% endfor %}
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+    <script
+      src="https://code.jquery.com/jquery-3.2.1.slim.min.js"
+      integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN"
+      crossorigin="anonymous"
+    ></script>
+    <script
+      src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js"
+      integrity="sha384-ApNbgh9B+Y1QKtv3Rn7W3mgPxhU9K/ScQsAP7hUibX39j7fakFPskvXusvfa0b4Q"
+      crossorigin="anonymous"
+    ></script>
+    <script
+      src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js"
+      integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl"
+      crossorigin="anonymous"
+    ></script>
+    <script src="{{ url_for('static', filename='script/actions.js') }}"></script>
+  </body>
 </html>
