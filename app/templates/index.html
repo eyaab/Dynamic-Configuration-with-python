@@ -27,10 +27,14 @@
         padding: 20px;
       }
       .big-container {
-        background-color: beige;
+        background-color: lavenderblush;;
       }
       .title {
         color: darkblue;
+      }
+      .add-button {
+        margin-top:30px;
+        align-content: right;
       }
     </style>
   </head>
@@ -39,83 +43,20 @@
     <div class="container">
       <h3 class="title">Welcome to our todo project app</h3>
       <hr />
-      <form action="/create" method="post" form="form1">
+      <form action="/create" method="POST" form="form1">
         <div class="form-group">
-          <label for="title" class="subtitle">Add a todo project task</label>
+          <label for="title" class="subtitle">List of added tasks</label>
 
-          <input
-            type="text"
-            class="form-control"
-            id="title"
-            name="title"
-            placeholder="Enter Todo..."
-            onchange="myFunction(this.value)"
-          /><br />
         </div>
       </form>
-      <div style="text-align: right">
-        <button
-          type="button"
-          class="btn btn-info btn-sm"
-          data-bs-toggle="modal"
-          data-bs-target="#task-modal"
-          data-source="New Task"
-          onclick="document.getElementById('task-modal').style.display='contents'"
-        >
-          Add/Edit todo project Task
-        </button>
-      </div>
-      <div
-        class="modal fade"
-        id="task-modal"
-        tabindex="-1"
-        aria-labelledby="Label"
-        aria-hidden="true"
-      >
-        <div class="modal-dialog">
-          <div class="modal-content modal-reference">
-            <div class="modal-header">
-              <h5 class="modal-title" id="Label">Edit/Add a task</h5>
-            </div>
 
-            <div class="modal-body">
-              <div class="input-group mb-3">
-                <span class="input-group-text" id="task-form-display"
-                  >Task</span
-                >
-                <input
-                  type="text"
-                  class="form-control"
-                  placeholder="Description of task"
-                  aria-label="task-name"
-                  aria-describedby="basic-addon1"
-                />
-              </div>
-            </div>
-            <div class="modal-footer">
-              <button
-                type="button"
-                class="btn btn-danger"
-                data-bs-dismiss="modal"
-                onclick="document.getElementById('task-modal').style.display='none'"
-              >
-                Close
-              </button>
-              <button id="submit-task" type="button" class="btn btn-success">
-                Save changes
-              </button>
-            </div>
-          </div>
-        </div>
-      </div>
-      <div class="container table-responsive">
+      <div class="table-responsive">
         <table class="table">
           <thead>
             <tr>
               <th class="task-id">TASK ID</th>
               <th class="task">TASK NAME</th>
               <th class="status">STATUS</th>
-              <th class="update">EDIT</th>
               <th class="update">REMOVE</th>
             </tr>
           </thead>
@@ -132,9 +73,7 @@
                   type="button"
                   class="btn btn-outline-warning btn-sm state"
                   data-source="{{item.id}}"
-                >
-                  {{item.status}}
-                </button>
+                >{{item.status}}</button>
               </td>
               {%endif%} {% if item.status == "Todo" %}
               <td>
@@ -142,9 +81,7 @@
                   type="button"
                   class="btn btn-outline-secondary btn-sm state"
                   data-source="{{item.id}}"
-                >
-                  {{item.status}}
-                </button>
+                >{{item.status}}</button>
               </td>
               {%endif%} {% if item.status == "Complete" %}
               <td>
@@ -152,24 +89,9 @@
                   type="button"
                   class="btn btn-outline-success btn-sm state"
                   data-source="{{item.id}}"
-                >
-                  {{item.status}}
-                </button>
+                >{{item.status}}</button>
               </td>
               {%endif%}
-
-              <td>
-                <button
-                  type="button"
-                  class="btn btn-outline-info"
-                  data-bs-toggle="modal"
-                  data-bs-target="#task-modal"
-                  data-source="{{item.id}}"
-                  data-content="{{item.task}}"
-                >
-                  Edit
-                </button>
-              </td>
 
               <td>
                 <button
@@ -184,14 +106,34 @@
             {% endfor %}
           </tbody>
         </table>
+        <form action="/create" method="POST" form="form1">
+          <div class="form-group">
+            <label for="title" class="subtitle">Add a todo project task</label>
+  
+          </div>
+        </form>
+  
+        <div
+     
+        id="task-modal"
+      >
+      <input
+      type="text"
+      class="form-control"
+      placeholder="Description of task"
+      aria-label="task-name"
+      aria-describedby="basic-addon1"
+    />
+    <div class="add-button">
+      <button id="submit-task" type="button" class="btn btn-info">
+        Add TODO project Task
+      </button>
+    </div>
+  </div>
       </div>
     </div>
 
-    <script
-      src="https://code.jquery.com/jquery-3.2.1.slim.min.js"
-      integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN"
-      crossorigin="anonymous"
-    ></script>
+    <script src="https://code.jquery.com/jquery-3.1.1.min.js"></script>
     <script
       src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js"
       integrity="sha384-ApNbgh9B+Y1QKtv3Rn7W3mgPxhU9K/ScQsAP7hUibX39j7fakFPskvXusvfa0b4Q"
