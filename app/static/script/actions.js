@@ -29,7 +29,7 @@ $(document).ready(function () {
             url: tID ? '/edit/' + tID : '/create',
             contentType: 'application/json;charset=UTF-8',
             data: JSON.stringify({
-                'description': $('#task-modal').find('.form-control').val()
+                'task': $('#task-modal').find('.form-control').val()
             }),
             success: function (res) {
                 console.log(res.response)
@@ -59,7 +59,9 @@ $(document).ready(function () {
     $('.state').click(function () {
         const state = $(this)
         const tID = state.data('source')
-        const new_state = "Todo"
+        console.log(state.text().length)
+        new_state = "Todo"
+        console.log((state.text() == "In Progress"))
         if (state.text() === "In Progress") {
             new_state = "Complete"
         } else if (state.text() === "Complete") {
@@ -67,6 +69,9 @@ $(document).ready(function () {
         } else if (state.text() === "Todo") {
             new_state = "In Progress"
         }
+
+        console.log(new_state)
+
 
         $.ajax({
             type: 'POST',

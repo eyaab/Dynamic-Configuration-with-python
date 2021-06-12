@@ -1,13 +1,14 @@
 from flask import Flask, render_template,  request, jsonify, redirect, url_for
 from app import app
-from app import database as db_helper
 import sqlite3 as sql
+import json
 
 # connect to tasks_database.sq (database will be created, if not exist)
 con = sql.connect('tasks_database.db')
 con.execute('CREATE TABLE IF NOT EXISTS tbl_tasks (ID INTEGER PRIMARY KEY AUTOINCREMENT,'
             + 'task TEXT, status TEXT)')
 con.close
+
 
 @app.route("/create", methods=['GET', 'POST'])
 def create():
@@ -17,8 +18,8 @@ def create():
      else:
      # request.method == 'POST':
      # read data from the form and save in variable
-            task = request.form['task']
-            status = 'todo'
+            task = request.get_json()['task']
+            status = 'Todo'
             # store in database
             try:
                 con = sql.connect('tasks_database.db')
@@ -39,18 +40,18 @@ def create():
 
 @app.route("/edit/<int:task_id>", methods=['POST'])
 def update(task_id):
-    data = request.get_json()
-    print(data)
+    status = request.get_json()['status']
     try:
-        if "status" in data:
-            # db_helper.update_status_entry(task_id, data["status"])
-            result = {'success': True, 'response': 'Status Updated'}
-        elif "description" in data:
-            # db_helper.update_task_entry(task_id, data["description"])
-            result = {'success': True, 'response': 'Task Updated'}
-        else:
-            result = {'success': True, 'response': 'Nothing Updated'}
-    except:
+        con = sql.connect('tasks_database.db')
+        cur = con.cursor()
+        query = "UPDATE tbl_tasks SET status='{}' WHERE ID={}".format(status,task_id)
+        print(query)
+        cur.execute(query)
+        con.commit()
+        con.close()
+        result = {'success': True, 'response': 'Status Updated'}
+    except sql.Error as error:
+        print("Failed to update sqlite table", error) 
         result = {'success': False, 'response': 'Something went wrong'}
 
     return jsonify(result)
@@ -60,7 +61,12 @@ def update(task_id):
 def delete(task_id):
 
     try:
-        # db_helper.remove_task_by_id(task_id)
+        con = sql.connect('tasks_database.db')
+        cur = con.cursor()
+        query = 'DELETE FROM tbl_tasks WHERE ID={}'.format(task_id)
+        cur.execute(query)
+        con.commit()
+        con.close()
         result = {'success': True, 'response': 'Removed task'}
     except:
         result = {'success': False, 'response': 'Something went wrong'}
@@ -69,13 +75,18 @@ def delete(task_id):
 
 
 @app.route("/")
+        
 def homepage():
+    con = sql.connect('tasks_database.db')
+    cur = con.cursor()
+    cur.execute("SELECT * FROM tbl_tasks")
+
+    rows = cur.fetchall()
+    items = []
+    for row in rows :
+        items.append({'id' : row[0],'task' : row[1],'status': row[2]})
+    
+    print(items)
     # @TO DO bring items from BD
-    items = [
-        {"id": 1, "task": "Understand dynamic config management", "status": "Complete"},
-        {"id": 2, "task": "Search papers related to dynamic config management",
-            "status": "In Progress"},
-        {"id": 3, "task": "Arrange a meetings with our mentor",
-                          "status": "In Progress"},
-    ]
+
     return render_template("index.html", items=items)
