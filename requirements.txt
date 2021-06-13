@@ -1,6 +1,3 @@
-<<<<<<< HEAD
-gunicorn==20.1.0
-=======
 click==8.0.0
 colorama==0.4.4
 Flask==2.0.0
@@ -12,4 +9,3 @@ Jinja2==3.0.0
 MarkupSafe==2.0.0
 SQLAlchemy==1.4.15
 Werkzeug==2.0.1
->>>>>>> 18b3f05cdec669deec211f4f7bc5751d91e4375e
