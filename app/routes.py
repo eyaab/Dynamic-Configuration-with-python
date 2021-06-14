@@ -1,13 +1,18 @@
-from flask import Flask, render_template,  request, jsonify, redirect, url_for
-from app import app
+from flask import Flask, config, render_template,  request, jsonify, redirect, url_for
+from app import app, configuration
 import sqlite3 as sql
-import consul
+from flask_apscheduler import APScheduler
 
 # connect to tasks_database.sq (database will be created, if not exist)
 con = sql.connect('tasks_database.db')
 con.execute('CREATE TABLE IF NOT EXISTS tbl_tasks (ID INTEGER PRIMARY KEY AUTOINCREMENT,'
             + 'task TEXT, status TEXT)')
 con.close()
+
+scheduler = APScheduler()
+scheduler.add_job(func=configuration.update,
+                  trigger='interval', id='job', seconds=1)
+scheduler.start()
 
 
 @app.route("/create", methods=['GET', 'POST'])
@@ -63,7 +68,8 @@ def delete(task_id):
     try:
         con = sql.connect('tasks_database.db')
         cur = con.cursor()
-        query = 'DELETE FROM tbl_tasks WHERE ID={}'.format(task_id)
+        query = 'DELETE FROM tbl_tasks WHERE ID={}'.format(
+            task_id)  # fix sql injection
         cur.execute(query)
         con.commit()
         con.close()
@@ -85,15 +91,10 @@ def homepage():
     for row in rows:
         items.append({'id': row[0], 'task': row[1], 'status': row[2]})
 
-    print(items)
     # @TO DO bring items from BD
-    c = consul.Consul()
 
-    # poll a key for updates
-    index = None
-    index, data = c.kv.get('flask/color', index=index)
-    backgroundColor = data['Value'].decode("utf-8")
-
+    print(configuration.config["backgroundColor"])
+    backgroundColor = configuration.config["backgroundColor"]
     # in another process
     #c.kv.put('foo', 'bar')
 
