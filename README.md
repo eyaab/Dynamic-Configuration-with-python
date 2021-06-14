@@ -18,3 +18,7 @@ flask run
 * .config/ Contains Flask and SCSS configuration.
 * run.py Run to start Flask Server.
 * data.db SQLite Database File.
+
+## Consul
+* consul agent -dev to launch consul
+* consul kv put "key" "value" (flask/color) 
